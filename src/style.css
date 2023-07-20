@@ -1,0 +1,26 @@
+
+:root {
+  --brand-color: #409EFF;
+}
+
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,body {
+  height: 100%;
+  min-width: 1268px;
+  font-size: 16px;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
