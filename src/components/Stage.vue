@@ -94,13 +94,14 @@
 
 import lax from "lax.js"
 import { onMounted, ref, onUnmounted } from 'vue';
+import http from "@/utils/api/api";
 
 const stagePlayground = ref<HTMLDivElement | null>(null)
 const stagePlaygroundSec = ref<HTMLDivElement | null>(null)
 const stagePlaygroundThird = ref<HTMLDivElement | null>(null)
-//details-box  stage-voice-img animation-container-third
 let timer:any = null
-onMounted(() => {
+
+onMounted(async() => {
     const spHeight: number = stagePlayground.value ? stagePlayground.value.getBoundingClientRect().top : 0
     const spsHeight: number = stagePlaygroundSec.value ? stagePlaygroundSec.value.getBoundingClientRect().top : 0
     const sptHeight: number = stagePlaygroundThird.value ? stagePlaygroundThird.value.getBoundingClientRect().top : 0
@@ -109,7 +110,7 @@ onMounted(() => {
       for(let i = 0; i < 10; i++) {
         let ele: HTMLElement  = document.getElementById(`item-${i}`)!
         let height = 300 * Math.sin(Math.PI / 10 * i) * Math.random()
-        ele.style = `transition: height 0.15s ease;height:${height}px;`
+        ele.style.cssText = `transition: height 0.15s ease;height:${height}px;`
       }
     }, 150);
     lax.addDriver('scrollY', function () {
@@ -183,6 +184,12 @@ onMounted(() => {
           ]
         }
     })
+
+
+    // 获取首页评价 to-do show it
+    const data = await http.getHomeEvaluations({});
+    console.log(data);
+    
 })
 onUnmounted(() => {
     clearInterval(timer)

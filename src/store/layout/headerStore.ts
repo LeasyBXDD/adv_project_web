@@ -4,6 +4,7 @@ import { defineStore } from "pinia";
 
 interface Header {
     homeHeader: Array<Layout.HeaderMenu>;
+    userHeader: Array<Layout.HeaderMenu>;
     voiceprintHeader: Array<Layout.HeaderMenu>;
     curBreadList: Array<Layout.BreadItem>
 }
@@ -19,6 +20,20 @@ export const headerStore = defineStore('header', {
             { title: '关于我们', key: 3 },
             { title: '联系我们', key: 4 },
             { title: '常见问题', key: 5 }
+        ],
+
+        // 个人信息界面下的header
+        userHeader: [
+            {
+                title: "编辑个人资料",
+                key: 1,
+                pathName: "EditProfile"
+            },
+            {
+                title: "安全中心",
+                key: 2,
+                pathName: "SecurityCenter"
+            }
         ],
 
         //Voiceprint下header

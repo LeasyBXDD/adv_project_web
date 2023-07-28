@@ -6,27 +6,27 @@
         <div class="bar-box">
             <div class="bar-item">
                 <div class="bar-inner">
-                    <CircleProgressBar :rate="results.confidenceLevel * 100"></CircleProgressBar>
+                    <CircleProgressBar :rate="chartData ? chartData.my.confidenceLevel*100 : 0"></CircleProgressBar>
                     <div class="detials">
-                        <p> <span>{{ results.confidenceLevel }}</span> / 1 </p>
+                        <p> <span>{{ chartData ? chartData.my.confidenceLevel : 0 }}</span> / 1 </p>
                         <p class="title">置信度</p>
                     </div>
                 </div>
             </div>
             <div class="bar-item">
                 <div class="bar-inner">
-                    <CircleProgressBar :rate="results.equalErrorRate * 10"></CircleProgressBar>
+                    <CircleProgressBar :rate="chartData ? chartData.my.equalErrorRate*100 : 0"></CircleProgressBar>
                     <div class="detials">
-                        <p><span>{{ results.equalErrorRate }} </span> %</p>
+                        <p><span>{{ chartData ? chartData.my.equalErrorRate : 0 }} </span> %</p>
                         <p class="title">等错误率</p>
                     </div>
                 </div>
             </div>
             <div class="bar-item">
                 <div class="bar-inner">
-                    <CircleProgressBar :rate="results.minDetectionCostFunc * 1000"></CircleProgressBar>
+                    <CircleProgressBar :rate="chartData ? chartData.my.minDetectionCostFunc*100 : 0"></CircleProgressBar>
                     <div class="detials">
-                        <p><span>{{ results.minDetectionCostFunc }}</span></p>
+                        <p><span>{{ chartData ? chartData.my.minDetectionCostFunc : 0 }}</span></p>
                         <p class="title">最小检测成本函数</p>
                     </div>
                 </div>
@@ -79,12 +79,20 @@
 
 import CircleProgressBar from "../progressBar/CircleProfressBar.vue"
 import BarY from "../charts/BarY.vue"
-import { reactive } from "vue"
+import { onMounted, ref } from "vue"
+import { useRoute } from "vue-router";
+import http from "@/utils/api/api";
 
 interface Results {
     confidenceLevel: number;
     equalErrorRate: number;
     minDetectionCostFunc: number;
+    runtime?: number;
+
+}
+interface DetailResponse {
+    my: Results;
+    average: Results;
 }
 
 interface ChartData {
@@ -92,22 +100,34 @@ interface ChartData {
     average: Results;
 }
 
-let results = reactive<Results>({
-    confidenceLevel: 0.95,
-    equalErrorRate: 0.03,
-    minDetectionCostFunc: 0.05
-})
+const route = useRoute()
 
-let chartData = reactive<ChartData>({
+
+
+const chartData = ref<ChartData>({
     my: {
-        confidenceLevel: results.confidenceLevel * 100,
-        equalErrorRate: results.equalErrorRate * 100,
-        minDetectionCostFunc: results.minDetectionCostFunc * 1000
+        confidenceLevel: 0,
+        equalErrorRate: 0,
+        minDetectionCostFunc: 0,
     },
     average: {
-        confidenceLevel: results.confidenceLevel * 100,
-        equalErrorRate: results.equalErrorRate * 100,
-        minDetectionCostFunc: results.minDetectionCostFunc * 1000
+        confidenceLevel: 0,
+        equalErrorRate: 0,
+        minDetectionCostFunc: 0
+    }
+})
+
+onMounted(async () => {
+    // 获取histpryId，发请求
+    const historyId = route.params.id
+    const params = {
+        id: Number(historyId), // id is a number, not a string. It's a number. “1” is the number 1. “1”
+    }
+    try {
+        let data: DetailResponse = await <DetailResponse>http.getVoiceprintDetail(params)
+        chartData.value = data
+    } catch(e) { 
+        console.error(e);
     }
 })
 

@@ -18,15 +18,15 @@
                         <div class="item-files-name">测试文件</div>
                         <div class="item-files-ops">操作</div>
                     </div>
-                    <div class="row-item row-content" v-for="(item, index) in tableData" :key="item.filesName">
+                    <div class="row-item row-content" v-for="(item, index) in tableData" :key="item.time">
                         <div class="item-icon item"><div class="icon">{{ index + 1 }}</div></div>
-                        <div class="item-model item">{{ item.model }}</div>
+                        <div class="item-model item">{{ item.projectName }}</div>
                         <div class="item-time item">{{ item.time }}</div>
-                        <div class="item-files-name item">{{ item.filesName }}</div>
+                        <div class="item-files-name item">{{ item.fileName }}</div>
                         <div class="item-files-ops">
-                            <el-button text type="primary" @click="handleDetails">详情</el-button>
+                            <el-button text type="primary" @click="handleDetails(item)">详情</el-button>
                             |
-                            <el-button text type="danger">删除</el-button>
+                            <el-button text type="danger" @click="handleDelete(item)">删除</el-button>
                         </div>
                     </div>
                     
@@ -47,65 +47,92 @@
 
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router';
-
-
+import http from '@/utils/api/api';
+import { userStore } from '@/store/stores';
+import { ElMessage } from 'element-plus';
 
 interface TableDataItem {
-    model: string;
+    projectName: string;
     time: string;
-    filesName: string;
-    id?: number;
+    fileName: string;
+    historyId: number;
+    files: Array<string>;
+}
+
+type ListItem = {
+    projectName: string; 
+    time: string; 
+    fileName: string | Array<string>; 
+    historyId: number;
+    files: Array<string>;
+}
+
+interface TableDataResponse {
+    list: Array<ListItem>
+}
+
+interface DeleteResponse {
+    isDelete: boolean;
 }
 
 const router = useRouter()
-const tableData = ref<Array<TableDataItem>>([
-    {
-        model: 'OriginalAudio',
-        time: '2023年7月13日 17:25',
-        filesName: '声纹1.mp3; 声纹2.mp3; 声纹3.mp3'
-    },
-    {
-        model: 'Adversarial Sample',
-        time: '2023年7月13日 18:26',
-        filesName: '声纹1.mp3; 声纹2.mp3; 声纹3.mp3'
-    },
-    {
-        model: 'Adversarial Sample',
-        time: '2023年7月13日 18:26',
-        filesName: '声纹1.mp3; 声纹2.mp3; 声纹3.mp3'
-    },
-    {
-        model: 'Adversarial Sample',
-        time: '2023年7月13日 18:26',
-        filesName: '声纹1.mp3; 声纹2.mp3; 声纹3.mp3'
-    },
-    {
-        model: 'Adversarial Sample',
-        time: '2023年7月13日 18:26',
-        filesName: '声纹1.mp3; 声纹2.mp3; 声纹3.mp3'
-    },
-    {
-        model: 'Adversarial Sample',
-        time: '2023年7月13日 18:26',
-        filesName: '声纹1.mp3; 声纹2.mp3; 声纹3.mp3'
-    },
-    {
-        model: 'Adversarial Sample',
-        time: '2023年7月13日 18:26',
-        filesName: '声纹1.mp3; 声纹2.mp3; 声纹3.mp3'
-    }
-    
-])
+const tableData = ref<Array<TableDataItem>>([])
+const store = userStore()
 
+onMounted(async() => {
+    await renderTable()
+})
 
-const handleDetails = (): void => {
+const handleDetails = (item: ListItem): void => {
+
     router.push({
-        name: 'VoiceprintResult'
-    })
+        path: '/voiceprint/result/' + item.historyId,
+    })    
 }
 
+const handleDelete = async (item: ListItem): Promise<void> => {
+    const params = {
+        id: item.historyId
+    }
+
+    try {
+        const data: DeleteResponse = await <DeleteResponse>http.deleteVoiceprint(params)
+        if (data.isDelete) {
+            ElMessage({
+                message: "删除成功",
+                type: "success"
+            })
+            await renderTable()
+        }
+    } catch{  }
+}
+
+/**
+ * 从后端获取数据 渲染Table
+ */
+const renderTable = async (): Promise<void> => {
+    const params = {
+        userId: store.userInfo.userId,
+        page: 1,
+        size: 7
+    }
+
+    try {
+        let data: TableDataResponse = await <TableDataResponse>http.getVoiceprintHistory(params)
+        console.log(data);
+        
+        data.list.forEach(item => {
+            item.fileName = (item.fileName as string[]).join(';')	
+        });
+        tableData.value = data.list as 	Array<TableDataItem>; 	
+
+    } catch(e) {
+        // 请求失败
+        console.error(e);
+    }
+}
 </script>
 
 
@@ -164,6 +191,10 @@ const handleDetails = (): void => {
                     justify-content: flex-start;
                     align-items: center;
                     flex-wrap: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    
                 }
                 .item-icon {
                     flex: 1;  
@@ -172,7 +203,10 @@ const handleDetails = (): void => {
                     } 
                 }
                 .item-model {
-                    flex: 5;
+                    margin-right: 10px;
+                    width: 250px;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
                 .item-time {
                     flex: 5;

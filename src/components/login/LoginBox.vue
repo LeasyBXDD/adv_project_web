@@ -110,11 +110,9 @@ const handleLogin = async (): Promise<void> => {
         }
 
         try {
-            const data = await http.userLogin(params)
+            const data = await <Response.Login>http.userLogin(params)
             store.setToken(true)
-            store.setUserInfo(data)
-            console.log('data',data);
-            
+            store.setUserInfo(data)            
         } catch {
             return void 0
         }
@@ -137,6 +135,10 @@ const isValid = (): boolean => {
     if (userInfo.password && userInfo.phoneNum) {
         return true
     }
+    ElMessage({
+        message: "邮箱或密码不得为空",
+        type: "error"
+    })
     return false
 }
 </script>

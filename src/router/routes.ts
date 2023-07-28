@@ -1,6 +1,6 @@
+import type { RouteRecordRaw } from 'vue-router';
 
-
-const route: Array<any> = [
+const route: Array<RouteRecordRaw> = [
 
     {
         path: '/',
@@ -32,9 +32,26 @@ const route: Array<any> = [
                 component: () => import('../components/voiceprint/VoiceprintHistory.vue')
             },
             {
-                path: 'result',
+                path: 'result/:id',
                 name: 'VoiceprintResult',
                 component: () => import('../components/voiceprint/VoiceprintResult.vue')
+            }
+        ]
+    },
+    {
+        path: '/user',
+        name: 'User',
+        component: () => import('../views/User.vue'),
+        children: [
+            {
+                path: '',
+                name: 'EditProfile',
+                component: () => import('../components/userInfo/EditProfile.vue')
+            },
+            {
+                path: 'security-center',
+                name: 'SecurityCenter',
+                component: () => import('../components/userInfo/SecurityCenter.vue')
             }
         ]
     },

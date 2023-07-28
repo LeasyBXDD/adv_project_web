@@ -11,10 +11,9 @@
 
 <script setup lang="ts">
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 const props = defineProps(['rate'])
-
 const circleLeft = ref<HTMLDivElement | null>(null)
 const circleRight = ref<HTMLDivElement | null>(null)
 
@@ -45,6 +44,9 @@ const step = (): void => {
 }
 
 onMounted(() => {
+    step()
+})
+watch(props, () => {
     step()
 })
 </script>

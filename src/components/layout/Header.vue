@@ -18,11 +18,11 @@
                 <div class="user-ava">
                     <el-dropdown ref="dropdown" trigger="contextmenu" style="margin-right: 30px">
                         <span class="el-dropdown-link">
-                            <img src="../../assets/user.jpg" alt="UserAva" @mouseover="showDropDown" > 
+                            <img :src="userAvaSrc" alt="UserAva" @mouseover="showDropDown" > 
                         </span>
                         <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item :icon="User">个人信息</el-dropdown-item>
+                            <el-dropdown-item :icon="User" @click="handleRouterView('/user')">个人信息</el-dropdown-item>
                             <el-dropdown-item :icon="Fold" @click="handleLogout">退出</el-dropdown-item>
                         </el-dropdown-menu>
                         </template>
@@ -51,6 +51,9 @@ const emit = defineEmits(['changeBread'])
 const menu = ref<Array<Layout.HeaderMenu>>()
 const isLogin = ref<boolean>()
 const dropdown = ref<DropdownInstance>()
+const userAvaSrc = ref("")
+
+userAvaSrc.value = store.userInfo.userAva
 
 onMounted(() => {
     menu.value =  props.menu
@@ -63,18 +66,34 @@ const handleLogin = (path: string): void => {
     })
 }
 
-const handleRouterView = (menuItem: Layout.HeaderMenu):void => {
-    if (menuItem.path) {
+const handleRouterView = (menuItem: Layout.HeaderMenu | string):void => {
+    if (typeof menuItem === 'object') {
+
+        if (menuItem.path) {
+
+            router.push({
+                path: menuItem.path
+            })
+
+        } else {
+
+            router.push({
+                name: menuItem.pathName
+            })
+
+        }
+        
+        emit('changeBread', menuItem.breadList, true)
+
+    } else if (typeof menuItem === 'string') {
+
         router.push({
-            path: menuItem.path
+            path: menuItem
         })
-    } else {
-        router.push({
-            name: menuItem.pathName
-        })
+
     }
     
-    emit('changeBread', menuItem.breadList, true)
+    
 }
 
 const showDropDown = (): void => {

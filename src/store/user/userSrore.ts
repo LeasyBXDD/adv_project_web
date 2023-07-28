@@ -1,9 +1,11 @@
 
 import { defineStore } from "pinia"
 
+
 interface userState {
     token: boolean;
-    userInfo: Object
+    userInfo: User.Info;
+    userEdu: User.Edu;
 }
 
 
@@ -11,16 +13,36 @@ export const userStore = defineStore('user', {
 
     state: (): userState => ({
         token: false,
-        userInfo: {}
+        userInfo: {
+            userId: null,
+            userAva: '',
+            userName: '',
+            sex: null,
+            profile: '',
+            location: '',
+            phoneNum: ''
+        },
+        userEdu: {
+            schoolName: '',
+            field: '',
+            education: ''
+        }
     }),
 
     actions: {
+
         setToken(val: boolean) {
             this.token = val
         },
-        setUserInfo(val: Object) {
-            this.userInfo = val
+
+        setUserInfo(val: User.Info) {
+            this.userInfo = {...this.userInfo, ...val}
+        },
+
+        setUserEdu(val: User.Edu) {
+            this.userEdu = {...this.userEdu, ...val}
         }
+        
     },
 
     // 开启数据缓存
@@ -29,7 +51,7 @@ export const userStore = defineStore('user', {
         strategies: [
             {
               storage: sessionStorage,
-              paths: ['token', 'userInfo'],//指定要长久化的字段
+              paths: ['token', 'userInfo', 'userEdu'],//指定要长久化的字段
             },
             {
                 storage: localStorage,

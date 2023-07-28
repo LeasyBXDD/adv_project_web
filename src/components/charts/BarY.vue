@@ -8,12 +8,21 @@
 
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import * as echarts from 'echarts';
 
 const props = defineProps(['data'])
 
+
+watch(props, () => {
+    update()
+})
+
 onMounted(() => {
+    update()
+})
+
+const update = (): void => {
     var chartDom = document.getElementById('main');
     var myChart = echarts.init(chartDom);
     var option;
@@ -63,7 +72,7 @@ onMounted(() => {
     };
 
     option && myChart.setOption(option);
-})
+}
 
 </script>
 
