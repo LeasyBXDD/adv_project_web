@@ -4,7 +4,7 @@
             <div class="header">
                 <div class="header-left">
                     <div class="ava">
-                        <img src="../../assets/user.jpg" alt="用户头像" @click="handleChangeFile">
+                        <img :src="store.userInfo.userAva" alt="用户头像" @click="handleChangeFile" ref="userAva">
                         <input type="file" @change="updateAva($event as HTMLInputEvent)" ref="avaInput"> 
                         <div class="mask" 
                         @click="handleChangeFile"
@@ -41,84 +41,124 @@
 
 <script setup lang="ts">
 import { ElMessage } from "element-plus"
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted, inject } from "vue";
 import FormInput from "@/components/form/FormInput.vue"; 
+import http from "@/utils/api/api";
+import { userStore } from "@/store/stores";
+import { REFRESH_SYMBOL } from "@/symbol";
 
 interface HTMLInputEvent extends Event {
     target: HTMLInputElement & EventTarget;
 }
 
+interface UserInfoResponse {
+    name: string | null;
+    gender: number | null | string;
+    bio: string | null;
+    address: string | null;
+    phone: string | null;
+    school: string | null;
+    major: string | null;
+    education: string | null;
+}
+
+interface UserAvaResponse {
+    isEdited: boolean;
+}
+
 const avaInput = ref<HTMLInputElement | null>(null)
 const isShowMask = ref<boolean>(false)
+const store = userStore()
+const userAva = ref<HTMLImageElement | null>(null)
+const refresh = inject(REFRESH_SYMBOL) as Function
 const inputBasicInfo = reactive<Array<Props.FormInputProps>>([
     {
         title: "用户昵称",
-        value: "Aiis",
+        value: "",
         inputType: "text",
         disabled: false,
-        defaultValue: "未设置"
+        defaultValue: "未设置",
+        key: "name"
     },
     {
         title: "用户ID",
-        value: "qq_272798802",
+        value: "vps_" + store.userInfo.userId,
         inputType: "text",
         disabled: true,
-        defaultValue: "admin"
+        defaultValue: "admin",
+        key: "id"
     }
 ])
-const inputUserInfo = 	reactive<Array<Props.FormInputProps>>([
+const inputUserInfo = reactive<Array<Props.FormInputProps>>([
     {
         title: "性别",
-        value: "男",
+        value: "",
         inputType: "text",
         disabled: false,
-        defaultValue: "未选择"
+        defaultValue: "未选择",
+        key: "gender"
+
     },
     {
         title: "个人简介",
-        value: "你也在为拯救世界而烦恼吗",
+        value: "",
         inputType: "text",
         disabled: false,
-        defaultValue: "这个家伙有点懒，还没有简介"
+        defaultValue: "这个家伙有点懒，还没有简介",
+        key: "bio"
     },
     {
         title: "所在地",
         value: "",
         inputType: "text",
         disabled: false,
-        defaultValue: "未设置"
+        defaultValue: "未设置",
+        key: "address"
     },
     {
         title: "手机号",
         value: "",
         inputType: "text",
         disabled: false,
-        defaultValue: "暂未绑定手机号"
+        defaultValue: "暂未绑定手机号",
+        key: "phone"
+
     }
 ])
 const inputEduInfo = reactive<Array<Props.FormInputProps>>([
     {
         title: "学校名称",
-        value: "杭州师范大学",
+        value: "",
         inputType: "text",
         disabled: false,
-        defaultValue: "暂未认证"
+        defaultValue: "暂未认证",
+        key: "school"
+
     },
     {
         title: "专业",
         value: "",
         inputType: "text",
         disabled: false,
-        defaultValue: "暂未认证"
+        defaultValue: "暂未认证",
+        key: "major"
+
     },
     {
         title: "学历",
-        value: "本科",
+        value: "",
         inputType: "text",
         disabled: false,
-        defaultValue: "暂未认证"
+        defaultValue: "暂未认证",
+        key: "education"
+
     }
 ])
+
+
+onMounted(async () => {
+    await userInfoRequest()
+})
 
 const handleChangeFile = (): void => {
     if(avaInput.value) {
@@ -129,8 +169,31 @@ const handleChangeFile = (): void => {
 const updateAva = (e: HTMLInputEvent): void => {
     if (e.target.files && e.target.files?.length !== 0) {
         const file: File = e.target.files[0]
-        // to-do ajax file
-        console.log(file);
+        // base64编码
+        const r = new FileReader()
+        r.onload = () => {
+            console.log(r.result);
+            
+            // ajax
+            setUserAva(r.result as string).then((res) => {
+                ElMessage({
+                    message: res,
+                    type: "success"
+                })
+                userAva.value?.setAttribute("src", r.result as string)
+                store.setUserInfo({
+                    userAva: r.result as string
+                })
+                // 刷新避免header头像不更新
+                refresh()
+            }).catch((e) => {
+                ElMessage({
+                    message: e,
+                    type: "error"
+                })
+            })
+        }
+        r.readAsDataURL(file)
     } else {
         ElMessage({
             message: "请上传头像",
@@ -140,7 +203,40 @@ const updateAva = (e: HTMLInputEvent): void => {
     }
 }
 
+const userInfoRequest = async (): Promise<void> => {
 
+    const params = {
+        userId: store.userInfo.userId
+    }
+    const data = await http.getUserInfo(params) as UserInfoResponse
+
+    // 赋值
+    inputBasicInfo[0].value = data.name
+    inputUserInfo[0].value = data.gender === ("0" || 0) ? '女' : data.gender === ("1" || 1) ? '男' : null
+    inputUserInfo[1].value = data.bio
+    inputUserInfo[2].value = data.address
+    inputUserInfo[3].value = data.phone
+    inputEduInfo[0].value = data.school
+    inputEduInfo[1].value = data.major
+    inputEduInfo[2].value = data.education
+}
+
+// 上传至后端
+const setUserAva = async (fileToBase64: string): Promise<string> => {
+    const indexNum = fileToBase64.indexOf(',')
+    fileToBase64 = fileToBase64.slice(indexNum + 1)
+
+    const params = {
+        userId: store.userInfo.userId,
+        userAva: fileToBase64
+    }
+    const data = await http.editUserAva(params) as UserAvaResponse
+    if (data.isEdited) {
+        return Promise.resolve('上传成功')
+    } else {
+        return Promise.reject('上传失败')
+    }
+}
 </script>
 
 

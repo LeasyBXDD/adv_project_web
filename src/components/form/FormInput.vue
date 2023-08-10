@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div class="input-item" v-else>
-                <input :type="props.inputData.inputType" v-model="inputVal">
+                <input :type="props.inputData.inputType" v-model="inputVal" v-focus>
                 <div class="ops">
                     <button class="btn btn-submit" @click="handleSubmit">确定</button>
                     <button class="btn btn-cancel" @click="isShowInput=false">取消</button>
@@ -31,21 +31,57 @@
 <script setup lang="ts">
 
 import { ref } from 'vue';
+import http from '@/utils/api/api';
+import { userStore } from '@/store/stores';
+import { ElMessage } from 'element-plus';
+import { inject } from 'vue';
+import { REFRESH_SYMBOL } from '@/symbol';
+
+interface EditUserInfoResponse {
+    isEdited: boolean
+}
 
 const props = defineProps<{
     inputData: Props.FormInputProps
 }>()
 const isShowInput = ref<boolean>(false)
 const isShowEdit = ref<boolean>(false)
-const inputVal = ref<string>("")
+const inputVal = ref<string | null | number>("")
+const store = userStore()
+const refresh = inject(REFRESH_SYMBOL) as Function
 
 const handleEdit = (): void => {
     isShowInput.value = !isShowInput.value
     inputVal.value = props.inputData.value
 }
 
-const handleSubmit = (): void => {
+const handleSubmit = async (): Promise<void> => {
     // to-do ajax
+
+    if (props.inputData.key === 'gender') {
+        inputVal.value = '男' ? "1" : "0"
+    }
+    const params = {
+        id: store.userInfo.userId,
+        [props.inputData.key]: inputVal.value
+    }
+
+    const data = await http.editUserInfo(params) as EditUserInfoResponse
+
+    if (data.isEdited) {
+        ElMessage({
+            message: "修改成功",
+            type: "success"
+        })
+    } else {
+        ElMessage({
+            message: "修改失败",
+            type: "error"
+        })
+         
+    }
+    // 刷新 重新获取个人信息
+    refresh()       
     isShowInput.value = false
 }
 </script>

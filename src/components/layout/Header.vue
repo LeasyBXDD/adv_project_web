@@ -53,7 +53,7 @@ const isLogin = ref<boolean>()
 const dropdown = ref<DropdownInstance>()
 const userAvaSrc = ref("")
 
-userAvaSrc.value = store.userInfo.userAva
+userAvaSrc.value = store.userInfo.userAva as string
 
 onMounted(() => {
     menu.value =  props.menu
@@ -104,6 +104,9 @@ const showDropDown = (): void => {
 const handleLogout = (): void => {
     store.setToken(false)
     isLogin.value = false
+    router.push({
+        name: 'Home'
+    })
 }
 </script>
 
@@ -129,6 +132,9 @@ const handleLogout = (): void => {
             cursor: pointer;
         }
 
+        h2 {
+            white-space: nowrap;
+        }
 
         .header-title {
             display: flex;
@@ -145,6 +151,7 @@ const handleLogout = (): void => {
                 transition: background-color 0.3s ease-in-out;
                 position: relative;
                 cursor: pointer;
+                white-space: nowrap;
             }
             .title-item:hover {
                 background-color: #ecf5ff;
@@ -174,6 +181,7 @@ const handleLogout = (): void => {
                 padding: 8px 17px;
                 border-radius: 10px;
                 cursor: pointer;
+                white-space: nowrap;
             }
             .ops-login {
                 background-color: var(--brand-color);
@@ -202,6 +210,27 @@ const handleLogout = (): void => {
         }
     }
     
+}
+
+@media screen and (max-width: 481px) {
+    .header {
+        justify-content: space-between;
+        padding: 0;
+        .header-left {
+            h2 {
+                display: none;
+            }
+         
+            .header-title {
+                .title-item:not(:first-child) {
+                    display: none;
+                }
+            }
+        }
+        .header-right {
+            margin-right: 0;
+        }
+    }
 }
 
 </style>

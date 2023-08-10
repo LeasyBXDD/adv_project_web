@@ -50,7 +50,7 @@ const update = (): void => {
     },
     yAxis: {
         type: 'category',
-        data: ['average', 'my']
+        data: ['my', 'average']
     },
     series: [
         {
@@ -66,7 +66,7 @@ const update = (): void => {
         {
         name: 'Minimum detection cost function',
         type: 'bar',
-        data: [props.data.my.minDetectionCostFunc, props.data.my.minDetectionCostFunc]
+        data: [props.data.my.minDetectionCostFunc, props.data.average.minDetectionCostFunc]
         }
     ]
     };

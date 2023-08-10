@@ -9,7 +9,7 @@
                     </div>
                     <div class="ops">
                         <button class="login-btn" @click="hanldeRouter('Home')">返回首页</button>
-                        <button>前往小程序端</button>
+                        <button class="app-btn">前往小程序端</button>
                     </div>
                 </div>
             </transition>
@@ -22,6 +22,7 @@
     <div>
         <Footer></Footer>
     </div>
+
 </template>
 
 
@@ -154,5 +155,22 @@ const hanldeRouter = (pathName: string):void => {
     }
     
 }
-
+@media screen and (max-width: 481px) {
+    .box {
+        flex-direction: column;
+        .box-left {
+           .welcome-title {
+               white-space: nowrap;
+           }
+           .ops {
+              button {
+                white-space: nowrap;
+              }
+           }
+        }
+        .box-right {
+            transform: scale(0.7);
+        }
+    }
+}
 </style>

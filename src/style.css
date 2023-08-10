@@ -16,11 +16,21 @@
 }
 html,body {
   height: 100%;
-  min-width: 1268px;
   font-size: 16px;
 }
 
 a {
   text-decoration: none;
   color: black;
+}
+
+@media screen and (min-width: 481px) {
+  html,body {
+    min-width: 1268px;
+  }
+}
+@media screen and (max-width: 481px) {
+  html,body {
+    font-size: 10px;
+  }
 }

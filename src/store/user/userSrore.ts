@@ -6,6 +6,7 @@ interface userState {
     token: boolean;
     userInfo: User.Info;
     userEdu: User.Edu;
+    userFile: string[]
 }
 
 
@@ -15,18 +16,20 @@ export const userStore = defineStore('user', {
         token: false,
         userInfo: {
             userId: null,
-            userAva: '',
+            userAva: 'https://i.postimg.cc/gJfJXMNT/image.jpg',
             userName: '',
             sex: null,
             profile: '',
             location: '',
-            phoneNum: ''
+            phoneNum: '',
+            identity: ''
         },
         userEdu: {
             schoolName: '',
             field: '',
             education: ''
-        }
+        },
+        userFile: []
     }),
 
     actions: {
@@ -37,10 +40,15 @@ export const userStore = defineStore('user', {
 
         setUserInfo(val: User.Info) {
             this.userInfo = {...this.userInfo, ...val}
+            
         },
 
         setUserEdu(val: User.Edu) {
             this.userEdu = {...this.userEdu, ...val}
+        },
+
+        setUserFile(val: string[]) {
+            this.userFile = val
         }
         
     },

@@ -19,12 +19,18 @@ const route: Array<RouteRecordRaw> = [
         children: [
             {
                 path: 'submit/:stage',  
-                component: () => import('../components/voiceprint/VoiceprintSubmit.vue')
+                component: () => import('../components/voiceprint/VoiceprintSubmit.vue'),
+                meta: {
+                    keepAlive: true
+                }
             },
             {
                 path: 'submit',
                 name: 'VoiceprintSubmit',
-                redirect: 'submit/stage-submit'
+                redirect: 'submit/stage-submit',
+                meta: {
+                    keepAlive: true
+                }
             },
             {
                 path: 'history',
@@ -56,13 +62,40 @@ const route: Array<RouteRecordRaw> = [
         ]
     },
     {
+        path: '/evalution/:id',
+        name: 'Evalution',
+        component: () => import('../views/Evalution.vue')
+    },
+    {
         path: '/notFound',
         name: 'NotFound',
         component: () => import('../views/404.vue')
+    },
+    {
+        path: '/manager',
+        name: 'Manager',
+        component: () => import('@/views/Manager.vue'),
+        children: [
+            {
+                path: '',
+                name: 'ManageHome',
+                component: () => import('@/components/manager/ManageHome.vue'),
+                meta: {
+                    key: 0
+                }
+            },
+            {
+                path: 'manage-history',
+                name: 'ManageHistory',
+                component: () => import('@/components/manager/ManageHistory.vue'),
+                meta: {
+                    key: 1
+                }
+            }
+        ]
     }
 
 ]
-
 
 
 

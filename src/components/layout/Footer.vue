@@ -141,4 +141,22 @@
         }
     }
 }
+
+@media screen and (max-width: 481px) {
+    .footer-box {
+        .footer-details {
+            flex-direction: column;
+            gap: 20px;
+            .details-item-cols{
+                .more {
+                    gap: 50px;
+                }
+            }
+        }
+        .copyright {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+}
 </style>

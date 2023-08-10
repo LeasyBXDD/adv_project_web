@@ -21,7 +21,7 @@ const NETWORK_ERROR = '网络请求异常,请稍后再试'
 
 const service = axios.create({
     baseURL: config.urlApi.baseApi,
-    timeout: 5 * 1000,
+    // timeout: 5 * 1000,
     withCredentials: true // 异步携带 Token
 })
 
@@ -94,7 +94,7 @@ service.interceptors.response.use((res) => {
 }, (err) => {
 
     // 没有访问到后端接口，请求时报错
-    switch (err.response.status) {
+    switch (err.code) {
         case 404:
             ElMessage({
                 message: '请求错误,未找到该资源!',
@@ -111,7 +111,7 @@ service.interceptors.response.use((res) => {
             break
         default: 
             ElMessage({
-                message: NETWORK_ERROR + err.response.status,
+                message: NETWORK_ERROR + err.message,
                 type: 'error'
             })                        
     }

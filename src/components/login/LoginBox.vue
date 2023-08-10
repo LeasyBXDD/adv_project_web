@@ -38,6 +38,7 @@ import { userStore } from '../../store/stores';
 import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
 import http from '../../utils/api/api.ts'
+import config from '@/config/index'
 
 const store = userStore()
 const router = useRouter()
@@ -52,6 +53,12 @@ interface HasInputWord {
     hasInputAccount: boolean,
     hasInputPassword: boolean
 }
+
+const LOGIN_SETTING = {
+    "USER": "Home",
+    "ADMIN": "ManageHome",
+}
+
 const isFocusInput = reactive<FocusInput>({
     isAccountFocus: false,
     isPasswordFocus: false
@@ -101,7 +108,6 @@ const handleGoRegister = (): void => {
 
 const handleLogin = async (): Promise<void> => {
 
-    // to-do axios
     if (isValid()) {
 
         const params = {
@@ -111,8 +117,22 @@ const handleLogin = async (): Promise<void> => {
 
         try {
             const data = await <Response.Login>http.userLogin(params)
+            // 若不在mock的状态下需要进行base64头的添加 mock下不需要
+            if (!config.mock && data.userAva) {
+                data.userAva = 'data:image/jpeg;base64,' + data.userAva
+            } else if (!data.userAva){
+                delete data.userAva
+            }            
             store.setToken(true)
-            store.setUserInfo(data)            
+            store.setUserInfo(data)  
+            ElMessage({
+                message: '登陆成功',
+                type: 'success'
+            })
+            // 判断身份进行路由跳转
+            router.push({
+                name: (LOGIN_SETTING as {[key: string]: string})[data.identity]
+            })          
         } catch {
             return void 0
         }
@@ -121,14 +141,7 @@ const handleLogin = async (): Promise<void> => {
         return void 0
     }
 
-    // to-do 登录鉴权
-    ElMessage({
-        message: '登陆成功',
-        type: 'success'
-    })
-    router.push({
-        name: 'Home'
-    })
+    
 }
 
 const isValid = (): boolean => {
@@ -141,6 +154,7 @@ const isValid = (): boolean => {
     })
     return false
 }
+
 </script>
 
 <style scoped lang="less">

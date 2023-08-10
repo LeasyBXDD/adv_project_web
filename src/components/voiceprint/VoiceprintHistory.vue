@@ -35,10 +35,11 @@
         </div>
         <div class="box-footer">
             <el-pagination
-            :page-size="20"
+            :page-size="7"
             :pager-count="11"
             layout="prev, pager, next"
             :total="100"
+            v-model:current-page="curPage"
             />
         </div>
     </div>    
@@ -47,7 +48,7 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router';
 import http from '@/utils/api/api';
 import { userStore } from '@/store/stores';
@@ -80,13 +81,19 @@ interface DeleteResponse {
 const router = useRouter()
 const tableData = ref<Array<TableDataItem>>([])
 const store = userStore()
+const curPage = ref<number>(1)
 
 onMounted(async() => {
     await renderTable()
 })
 
-const handleDetails = (item: ListItem): void => {
+watch(
+    () => curPage.value, async () => {
+    await renderTable()
+})
 
+const handleDetails = (item: ListItem): void => {
+    store.setUserFile(item.files)
     router.push({
         path: '/voiceprint/result/' + item.historyId,
     })    
@@ -115,7 +122,7 @@ const handleDelete = async (item: ListItem): Promise<void> => {
 const renderTable = async (): Promise<void> => {
     const params = {
         userId: store.userInfo.userId,
-        page: 1,
+        page: curPage.value,
         size: 7
     }
 
@@ -126,7 +133,7 @@ const renderTable = async (): Promise<void> => {
         data.list.forEach(item => {
             item.fileName = (item.fileName as string[]).join(';')	
         });
-        tableData.value = data.list as 	Array<TableDataItem>; 	
+        tableData.value = data.list as Array<TableDataItem>; 	
 
     } catch(e) {
         // 请求失败
@@ -163,8 +170,12 @@ const renderTable = async (): Promise<void> => {
         .table-header {
             width: 100%;
             height: 120px;
-            background-color: grey;
-            color: white;
+            // background-color: grey;
+            background-image: url('../../assets/sky.jpeg');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: rgb(89, 89, 89);
             display: flex;
             flex-direction: column;
             align-items: center;

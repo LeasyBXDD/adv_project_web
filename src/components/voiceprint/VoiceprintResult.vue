@@ -1,7 +1,10 @@
 <template>
     <div class="box">
         <div class="img-box">
-            图片
+            
+        </div>
+        <div class="elu-div">
+            <el-button link type="primary" @click="handleFeedback">反馈</el-button>
         </div>
         <div class="bar-box">
             <div class="bar-item">
@@ -33,6 +36,7 @@
             </div>
             
         </div>
+        
         <div class="more-ops">
             <div class="more-ops-left more-ops-item">
                 <div class="title">
@@ -40,20 +44,20 @@
                 </div>
                 <div class="content">
                     <div class="content-item content-record">
-                        <el-button>下载声纹记录</el-button>
+                        <el-button @click="handleDownloadResult">下载声纹记录</el-button>
                         <p>点击下载声纹记录文档</p>
                     </div>
                     <div class="content-item content-files">
                         <div class="files">
-                            <div class="file-item">
+                            <div class="file-item" @click="handleDownloadFile(0)">
                                 <svg t="1689769539594" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2850" width="32" height="32"><path d="M639.45 107.46L848 316v531.46a60.07 60.07 0 0 1-60 60H236a60.07 60.07 0 0 1-60-60v-680a60.07 60.07 0 0 1 60-60h403.45m19.89-48H236a108 108 0 0 0-108 108v680a108 108 0 0 0 108 108h552a108 108 0 0 0 108-108V296.12L659.34 59.46z" fill="#333333" p-id="2851"></path><path d="M869.98 320.12H635.34V85.5h48v186.62h186.64v48zM488 353.72h48v287.52h-48zM297.67 726.28h428.66v48H297.67z" fill="#333333" p-id="2852"></path><path d="M512 669.36L355.92 513.28l33.94-33.94L512 601.48l122.14-122.14 33.94 33.94L512 669.36z" fill="#333333" p-id="2853"></path></svg>
                                 <p>声纹1</p>
                             </div>
-                            <div class="file-item">
+                            <div class="file-item" @click="handleDownloadFile(1)">
                                 <svg t="1689769539594" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2850" width="32" height="32"><path d="M639.45 107.46L848 316v531.46a60.07 60.07 0 0 1-60 60H236a60.07 60.07 0 0 1-60-60v-680a60.07 60.07 0 0 1 60-60h403.45m19.89-48H236a108 108 0 0 0-108 108v680a108 108 0 0 0 108 108h552a108 108 0 0 0 108-108V296.12L659.34 59.46z" fill="#333333" p-id="2851"></path><path d="M869.98 320.12H635.34V85.5h48v186.62h186.64v48zM488 353.72h48v287.52h-48zM297.67 726.28h428.66v48H297.67z" fill="#333333" p-id="2852"></path><path d="M512 669.36L355.92 513.28l33.94-33.94L512 601.48l122.14-122.14 33.94 33.94L512 669.36z" fill="#333333" p-id="2853"></path></svg>
                                 <p>声纹2</p>
                             </div>
-                            <div class="file-item">
+                            <div class="file-item" @click="handleDownloadFile(2)">
                                 <svg t="1689769539594" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2850" width="32" height="32"><path d="M639.45 107.46L848 316v531.46a60.07 60.07 0 0 1-60 60H236a60.07 60.07 0 0 1-60-60v-680a60.07 60.07 0 0 1 60-60h403.45m19.89-48H236a108 108 0 0 0-108 108v680a108 108 0 0 0 108 108h552a108 108 0 0 0 108-108V296.12L659.34 59.46z" fill="#333333" p-id="2851"></path><path d="M869.98 320.12H635.34V85.5h48v186.62h186.64v48zM488 353.72h48v287.52h-48zM297.67 726.28h428.66v48H297.67z" fill="#333333" p-id="2852"></path><path d="M512 669.36L355.92 513.28l33.94-33.94L512 601.48l122.14-122.14 33.94 33.94L512 669.36z" fill="#333333" p-id="2853"></path></svg>
                                 <p>声纹3</p>
                             </div>
@@ -77,11 +81,13 @@
 
 <script setup lang="ts">
 
-import CircleProgressBar from "../progressBar/CircleProfressBar.vue"
+import CircleProgressBar from "../progressBar/CircleProgressBar.vue"
 import BarY from "../charts/BarY.vue"
 import { onMounted, ref } from "vue"
 import { useRoute } from "vue-router";
 import http from "@/utils/api/api";
+import router from "@/router";
+import { userStore } from "@/store/stores";
 
 interface Results {
     confidenceLevel: number;
@@ -101,7 +107,7 @@ interface ChartData {
 }
 
 const route = useRoute()
-
+const store = userStore()
 
 
 const chartData = ref<ChartData>({
@@ -121,7 +127,7 @@ onMounted(async () => {
     // 获取histpryId，发请求
     const historyId = route.params.id
     const params = {
-        id: Number(historyId), // id is a number, not a string. It's a number. “1” is the number 1. “1”
+        id: Number(historyId), 
     }
     try {
         let data: DetailResponse = await <DetailResponse>http.getVoiceprintDetail(params)
@@ -131,6 +137,76 @@ onMounted(async () => {
     }
 })
 
+
+/**
+ * 下载声纹检测记录按钮
+ */
+const handleDownloadResult = (): void => {
+    // 借助时间戳生成下载的文件名
+    const fileName = (Date.now() / 10000+ "") + ".txt"
+    // 文件内容
+    const fileData = `
+        测试名为：${route.query.projectName} \n
+        置信度为：${chartData.value.my.confidenceLevel} \n
+        等错误率为：${chartData.value.my.equalErrorRate} \n
+        最小检测成本函数为：${chartData.value.my.minDetectionCostFunc} \n
+    `
+    // 下载文件
+    const urlObject = window.URL || window.webkitURL || window;
+    const export_blob = new Blob([fileData]);
+    const save_link: any = document.createElementNS("http://www.w3.org/1999/xhtml", "a")
+    save_link.href = urlObject.createObjectURL(export_blob);
+    save_link.download = fileName;
+    save_link.click();
+
+}
+
+/**
+ * 反馈
+ */
+const handleFeedback = (): void => {
+
+    router.push({
+        name: 'Evalution',
+        params: {
+            id: route.params.id
+        }
+    })
+    
+}
+
+/**
+ * 下载
+ */
+const handleDownloadFile = (key: number): void => {
+    function dataURLtoBlob(dataurl: string) {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)![1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], { type: mime });
+    }
+ 
+    function downloadFile(url: string,name='文件默认名'){
+        var a = document.createElement("a")
+        a.setAttribute("href",url)
+        a.setAttribute("download",name)
+        a.setAttribute("target","_blank")
+        let clickEvent = document.createEvent("MouseEvents");
+        clickEvent.initEvent("click", true, true);  
+        a.dispatchEvent(clickEvent);
+    }
+ 
+    function downloadFileByBase64(base64: string,name: string){
+        var myBlob = dataURLtoBlob(base64)
+        var myUrl = URL.createObjectURL(myBlob)
+        downloadFile(myUrl,name)
+    }
+    
+    downloadFileByBase64('data:audio/mpeg;base64,' + store.userFile[key], "声纹" +(key + 1) + ".mp3")
+
+}
 </script>
 
 
@@ -144,14 +220,18 @@ onMounted(async () => {
         height: 30vh;
         min-height: 230px;
         border-radius: 20px;
-        background-color: rgb(184, 184, 184);
         display: flex;
         justify-content: center;
         align-items: center;
         color: white;
+        background-image: url('../../assets/remove.png');
+    }
+    .elu-div {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 10px;
     }
     .bar-box {
-        margin-top: 30px;
         width: 100%;
         display: flex;
         align-items: center;
@@ -232,6 +312,40 @@ onMounted(async () => {
         .more-ops-right {
             flex: 7;
             padding-left: 30px;
+        }
+    }
+}
+
+@media screen and (max-width: 481px) {
+    .box {
+        .bar-box {
+            flex-direction: column;
+            .bar-item {
+                padding: 5px;
+            }
+        }
+        .more-ops {
+            flex-direction: column;
+            gap: 20px;
+            .more-ops-item {
+                width: 100%;
+            }
+            .more-ops-left {
+                border: none;
+                max-width: 100%;
+                border-bottom: 1px solid rgb(218, 218, 218);
+                .content {
+                    flex-direction: column;
+                    width: 100%;
+                    .content-item {
+                        width: 100%;
+                        display: flex;
+                    }
+                }
+            }
+            .more-ops-right {
+                padding-left: 0px;
+            }
         }
     }
 }

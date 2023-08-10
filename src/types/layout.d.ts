@@ -8,10 +8,16 @@ declare namespace Layout {
     }
 
     interface HeaderMenu {
-        title: string,
-        pathName?: string,
-        key: number,
-        breadList?: Array<BreadItem>,
-        path?: string
+        title: string;
+        pathName?: string;
+        key: number;
+        breadList?: Array<BreadItem>;
+        path?: string;
+    }
+
+    interface ManagerMenu {
+        key: number;
+        title: string;
+        pathName: string;
     }
 }

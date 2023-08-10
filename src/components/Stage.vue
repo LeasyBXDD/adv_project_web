@@ -10,7 +10,9 @@
                 </div>
                 <div class="ops">
                     <div class="ops-item ops-use">
-                        <router-link :to="{path: '/voiceprint/submit/stage-submit'}" style="color:white;">
+                        <router-link
+                         :to="{path: ROUTER_SETTING[store.userInfo.identity!] ? ROUTER_SETTING[store.userInfo.identity!] : '/login/index' }" 
+                         style="color:white;">
                             立即试用
                         </router-link>
                     </div>
@@ -39,22 +41,22 @@
                 </div>
                 <div class="sec-container">
                     <div class="sec-con-item sec-item1">
-                        <div class="img-box" style="background-color:orange">
-                            我是一张图片
+                        <div class="img-box" >
+                            <svg t="1691654595176" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4250" width="200" height="200"><path d="M698.368 835.584H339.968c-10.24 0-18.432-8.192-18.432-18.432s8.192-18.432 18.432-18.432h358.4c10.24 0 18.432 8.192 18.432 18.432s-8.192 18.432-18.432 18.432zM698.368 729.088H339.968c-10.24 0-18.432-8.192-18.432-18.432s8.192-18.432 18.432-18.432h358.4c10.24 0 18.432 8.192 18.432 18.432s-8.192 18.432-18.432 18.432z" p-id="4251" fill="#8a8a8a"></path><path d="M788.48 942.08H249.856c-43.008 0-75.776-34.816-75.776-75.776V184.32c0-43.008 34.816-75.776 75.776-75.776h538.624c43.008 0 75.776 34.816 75.776 75.776v681.984c2.048 40.96-32.768 75.776-75.776 75.776zM249.856 143.36c-22.528 0-40.96 18.432-40.96 40.96v681.984c0 22.528 18.432 40.96 40.96 40.96h538.624c22.528 0 40.96-18.432 40.96-40.96V184.32c0-22.528-18.432-40.96-40.96-40.96H249.856z" p-id="4252" fill="#8a8a8a"></path><path d="M493.568 581.632c-92.16 0-165.888-75.776-165.888-165.888s75.776-165.888 165.888-165.888 165.888 75.776 165.888 165.888c0 6.144-2.048 10.24-6.144 14.336-4.096 4.096-10.24 4.096-14.336 2.048l-67.584-24.576c-8.192-2.048-14.336-12.288-10.24-20.48 2.048-8.192 12.288-14.336 20.48-10.24l43.008 14.336c-12.288-61.44-65.536-108.544-131.072-108.544-73.728 0-133.12 59.392-133.12 133.12s59.392 133.12 133.12 133.12c47.104 0 90.112-24.576 114.688-63.488 4.096-8.192 14.336-10.24 22.528-6.144 8.192 4.096 10.24 14.336 6.144 22.528-30.72 51.2-83.968 79.872-143.36 79.872z" p-id="4253" fill="#8a8a8a"></path><path d="M645.12 432.128c-4.096 0-8.192-2.048-12.288-4.096-6.144-6.144-6.144-16.384 0-24.576l47.104-47.104c6.144-6.144 16.384-6.144 24.576 0 6.144 6.144 6.144 16.384 0 24.576l-47.104 47.104c-4.096 2.048-8.192 4.096-12.288 4.096z" p-id="4254" fill="#8a8a8a"></path></svg>
                         </div>
-                        <p>Details。。。</p>
+                        <p>基于C&W的样本恢复</p>
                     </div>
                     <div class="sec-con-item sec-item2">
                         <div class="img-box">
-                            我是一张图片
+                            <svg t="1691654745848" class="icon" viewBox="0 0 1280 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5709" width="200" height="200"><path d="M1245.159868 527.133322h-87.181145l-25.242424-167.617675a47.890764 47.890764 0 0 0-46.09486-39.90897h-0.239454c-18.956761 0-42.662689 14.407138-47.711174 37.813749L998.043525 563.051395 941.352833 168.830588a47.890764 47.890764 0 0 0-94.604214-0.778225l-76.824767 476.912193-83.928564-603.543355a47.890764 47.890764 0 0 0-94.903531 0l-83.928565 603.56331-76.824767-476.912193a47.890764 47.890764 0 0 0-94.604214 0.778224L279.043519 563.051395l-40.647286-205.531196a46.972858 46.972858 0 0 0-47.07263-37.913522h-0.997724a47.890764 47.890764 0 0 0-45.895316 39.90897l-25.322242 167.617675H31.927176a31.927176 31.927176 0 0 0-31.927176 31.927176v31.927176a31.927176 31.927176 0 0 0 31.927176 31.927176h162.010464l46.573769 233.467475c5.108348 23.725883 23.825655 38.75161 48.150172 37.913522a48.0504 48.0504 0 0 0 46.074906-40.806922l50.883937-355.34947L463.622506 982.095581c3.631716 22.209342 25.202515 39.50988 47.591447 40.008743a47.890764 47.890764 0 0 0 47.07263-41.126194L638.543522 402.81688l80.256939 578.101387a47.890764 47.890764 0 0 0 94.664077 1.077542l78.002082-483.896263 50.883937 355.449243a47.890764 47.890764 0 0 0 45.895316 40.747058c23.945382 0 43.580595-15.963588 48.269899-37.813749l46.573768-233.467475H1245.159868a31.927176 31.927176 0 0 0 31.927176-31.927177V559.060498a31.927176 31.927176 0 0 0-31.927176-31.927176z" p-id="5710" fill="#707070"></path></svg>
                         </div>
-                        <p>Details。。。</p>
+                        <p>基于ResCNN和TDNN方法的声纹识别</p>
                     </div>
                     <div class="sec-con-item sec-item3">
-                        <div class="img-box" style="background-color:rgb(0, 231, 31)">
-                            我是一张图片
+                        <div class="img-box" >
+                            <svg t="1691654784003" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6789" width="200" height="200"><path d="M904.5 604.6c0-2.8-0.1-5.7-0.4-8.6V235.7h-0.4v-0.9c0-19.8-7-49.5-40.1-78.8-21.2-18.8-50.7-35.3-87.6-49.1-71.2-26.6-165.1-41.3-264.4-41.3s-193.2 14.7-264.4 41.3c-36.8 13.8-66.3 30.3-87.6 49.1-33.2 29.3-40.1 59-40.1 78.8 0 2.9 0.1 5.7 0.4 8.6v171.8c-0.1 1.4-0.1 2.8-0.1 4.2 0 1.4 0 2.9 0.1 4.2V790c0.1 19.8 7.2 49.3 40.1 78.4 21.2 18.8 50.7 35.3 87.6 49.1 71.2 26.6 165.1 41.3 264.4 41.3s193.2-14.7 264.4-41.3c36.8-13.8 66.3-30.3 87.6-49.1 32.9-29.1 40-58.6 40.1-78.4V613.2c0.3-2.9 0.4-5.8 0.4-8.6zM191.9 336.8c14 8.3 30.6 16.4 50.3 24C314 388.6 409.6 404 511.6 404c102 0 197.8-15.4 269.6-43.3 19.1-7.4 36.1-15.6 50.9-24.5v83.2c0 14.5-23.8 38.4-76.9 59C692.3 503 603.5 517 511.6 517c-91.8 0-180.5-14-243.2-38.5-50.7-19.8-74.7-42.8-76.4-57.3v-84.4z m15.4-126.9c14.4-12.7 36.9-25 65.1-35.6 63.3-23.7 148.3-36.7 239.2-36.7s175.9 13 239.2 36.7c28.2 10.5 50.7 22.8 65.1 35.6 5.8 5.2 15.6 15.2 15.8 24.6v0.5c-0.2 14.4-24 38.1-76.5 58.5C692.3 318 603.5 332 511.6 332S331 318 268.2 293.7c-51.7-20-73.2-41.9-76.3-55.3v-2.7h-0.4v-0.9c0-9.4 9.9-19.6 15.8-24.9z m-15.4 311.5c14.7 8.7 31.5 16.8 50.3 24.2 71.8 28 167.5 43.4 269.4 43.4 102 0 197.7-15.4 269.7-43.4 19-7.4 36-15.6 50.8-24.4v86.9c-3.1 13.4-24.8 35.3-76.8 55.4-63 24.3-151.8 38.3-243.7 38.3-91.6 0-180.1-14-242.7-38.3-53.1-20.6-76.9-44.6-76.9-59.2v-82.9z m624.4 293c-14.4 12.7-36.9 25-65.1 35.6-63.3 23.7-148.3 36.7-239.2 36.7-90.9 0-175.9-13-239.2-36.7-28.2-10.5-50.7-22.8-65.1-35.6-5.9-5.2-15.8-15.4-15.8-24.9v-83.3c14.8 8.8 31.8 17 50.8 24.4 71.7 27.9 167.2 43.2 268.8 43.2 101.9 0 197.7-15.3 269.7-43.1 19.9-7.7 36.7-15.9 50.9-24.2v83.1c0 9.4-9.9 19.6-15.8 24.8z" fill="#707070" p-id="6790"></path><path d="M731.521085 429.78218a31.2 31.2 0 1 0 61.595038-9.990562 31.2 31.2 0 1 0-61.595038 9.990562Z" fill="#707070" p-id="6791"></path><path d="M762.7 606.5m-31.2 0a31.2 31.2 0 1 0 62.4 0 31.2 31.2 0 1 0-62.4 0Z" fill="#707070" p-id="6792"></path><path d="M762.7 793.9m-31.2 0a31.2 31.2 0 1 0 62.4 0 31.2 31.2 0 1 0-62.4 0Z" fill="#707070" p-id="6793"></path></svg>
                         </div>
-                        <p>Details。。。</p>
+                        <p>大型音频对抗样本数据集</p>
                     </div>
                 </div>
             </div>
@@ -85,6 +87,19 @@
                 </div>
             </div>
         </div>
+        <div class="stage-playground-forth" ref="stagePlaygroundForth">
+            <div class="animation-container-forth">
+                <h1>用户评价</h1>
+                <p>以下是一些用户对我们声纹识别系统的评价</p>
+                <div class="rows">
+                    <template v-if="HomeEvalutionData.list.length > 0">
+                        <div class="item" v-for="i in 3">
+                            <HomeEvalution :data="HomeEvalutionData.list[i + j]" v-for="j in 3" :key="j"></HomeEvalution>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -95,16 +110,39 @@
 import lax from "lax.js"
 import { onMounted, ref, onUnmounted } from 'vue';
 import http from "@/utils/api/api";
+import { userStore } from "@/store/stores";
+import HomeEvalution from "./cards/HomeEvalution.vue";
+
+interface HomeEvalutionProp {
+    level: number;
+    evaluation: string;
+    userName: string;
+    userAva: string;
+}
+
+interface Rseponse {
+    list: Array<HomeEvalutionProp>
+}
 
 const stagePlayground = ref<HTMLDivElement | null>(null)
 const stagePlaygroundSec = ref<HTMLDivElement | null>(null)
 const stagePlaygroundThird = ref<HTMLDivElement | null>(null)
+const stagePlaygroundForth = ref<HTMLDivElement | null>(null)
+const HomeEvalutionData = ref<Rseponse>({
+    list: []
+})
+const store = userStore()
 let timer:any = null
+const ROUTER_SETTING: {[key: string]: string} = {
+    "USER": '/voiceprint/submit/stage-submit',
+    "ADMIN": '/manager' 
+}
 
 onMounted(async() => {
     const spHeight: number = stagePlayground.value ? stagePlayground.value.getBoundingClientRect().top : 0
     const spsHeight: number = stagePlaygroundSec.value ? stagePlaygroundSec.value.getBoundingClientRect().top : 0
     const sptHeight: number = stagePlaygroundThird.value ? stagePlaygroundThird.value.getBoundingClientRect().top : 0
+    const spfHeight: number = stagePlaygroundForth.value ? stagePlaygroundForth.value.getBoundingClientRect().top : 0
     lax.init();
     timer = setInterval(() => {
       for(let i = 0; i < 10; i++) {
@@ -184,12 +222,21 @@ onMounted(async() => {
           ]
         }
     })
+    lax.addElements('.animation-container-forth', {
+        scrollY: {
+            opacity: [
+                [spfHeight-300,spfHeight],
+                [0, 1]
+            ],
+        }
+    })
 
 
-    // 获取首页评价 to-do show it
-    const data = await http.getHomeEvaluations({});
+    // 获取首页评价
+    const data = await http.getHomeEvaluations({}) as Rseponse;
     console.log(data);
     
+    HomeEvalutionData.value = data
 })
 onUnmounted(() => {
     clearInterval(timer)
@@ -343,10 +390,12 @@ onUnmounted(() => {
                 margin: 0 auto;
                 justify-content: space-around;
                 .sec-con-item {
+                    font-size: 1.3rem;
+                    text-align: center;
                     .img-box {
                         height: 300px;
                         width: 300px;
-                        background-color: rgb(78, 175, 255);
+                        // background-color: rgb(78, 175, 255);
                         border-radius: 20px;
                         display: flex;
                         justify-content: center;
@@ -422,6 +471,50 @@ onUnmounted(() => {
                     
                 }
             }
+        }
+    }
+    .stage-playground-forth {
+        width: 100%;
+        height: 2000px;
+        .animation-container-forth {
+            position: sticky;
+            height: 100vh;
+            opacity: 0;
+            top: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            .rows {
+                margin-top: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                .item {
+                    display: flex;
+                    gap: 30px;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 481px) {
+    .stages {
+        .stage-playground {
+            display: none;
+        }
+        .stage-playground-sec {
+            display: none;
+        }
+        .stage-playground-third {
+            display: none;
+        }
+        .stage-playground-forth {
+            display: none;
         }
     }
 }

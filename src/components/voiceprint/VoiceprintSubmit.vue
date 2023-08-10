@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <div class="img-box">图片</div>
+    <div class="img-box"></div>
     <div class="submit-box">
       <div class="submit-box-left">
         <h1>安全声纹检测</h1>
@@ -38,15 +38,9 @@
                         <el-empty description="暂未检测出结果" image-size="80" />
                     </div>
                     <div class="box-res-data" v-else>
-                        <div>
-                            <el-descriptions title="检测结果" direction="vertical" border>
-                                <el-descriptions-item label="声纹识别置信度">0.3 / 1</el-descriptions-item>
-                                <el-descriptions-item label="等错误率">0.8 / 1</el-descriptions-item>
-                                <el-descriptions-item label="最小检测成本函数">0.22 / 1</el-descriptions-item> 
-                            </el-descriptions>
-                        </div>
+                        
                         <div class="btn-watch-more">
-                            <el-button type="primary" plain @click="handleViewResult">点我查看详情</el-button>
+                            <el-button type="primary" plain @click="handleViewResult">查看详情</el-button>
                         </div>
                     </div>
                 </div>
@@ -56,7 +50,7 @@
       </div>
       <div class="submit-box-right">
         <div class="choice">
-          <p>选择测试模型</p>
+          <p>填写测试信息</p>
           <div class="choice-ops">
             <el-input v-model="checkedModel" placeholder="测试名称" />
           </div>
@@ -100,6 +94,10 @@
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
+import { userStore } from "@/store/stores";
+import { getCurDay } from "@/utils/day/getCurDay";
+import http from "@/utils/api/api";
+import config from "@/config/index"
 
 interface HTMLInputEvent extends Event {
   target: HTMLInputElement;
@@ -118,7 +116,11 @@ const checkedModel = ref<string>("");
 const fileList = ref<Array<FileDetail>>([]);
 const pCheck = ref<string>("step");
 const router = useRouter()
+const store = userStore()
 const emit = defineEmits(['changeBread'])
+const loadFiles = ref<FileList>()
+const paramsFiles: string[] = []
+const submitID = ref<number>()
 let globalTimer: number | null = null
 
 /**
@@ -141,9 +143,12 @@ const getFiles = (e: HTMLInputEvent): void => {
 
   if (checkFiles(e.target.files!)) {
     // 截取name和size
+    loadFiles.value = e.target.files!;
     fileList.value = getFileDetails(e.target.files!);
 
     activeStepMaster.value = 1;
+
+    paramsFiles.length = 0
   }
 };
 
@@ -218,7 +223,7 @@ const getFileDetails = (fs: FileList): Array<FileDetail> => {
  * @description 提交声纹
  */
 const handleSubmit = async (): Promise<void> => {
-  // 判断是否选择模型
+  // 判断是否填写项目名称
   if (!checkedModel.value) {
     ElMessage({
         message: '请填写测试名称',
@@ -242,7 +247,43 @@ const handleSubmit = async (): Promise<void> => {
     return void 0;
   }
 
-  // 提交声纹 to-do axios
+  // 提交声纹 
+  // 处理参数
+  const paramsFileName = fileList.value.map(item => item.name.split('.')[0])
+  
+  for (let i=0; i<3; i++) {
+    if (loadFiles.value) {
+      const f = await filesToBase64(loadFiles.value[i] as File)
+      paramsFiles.push(getSubmitBase64(f))
+    }
+  }
+  const params = {
+    fileName: paramsFileName,
+    userId: store.userInfo.userId,
+    projectName: checkedModel.value,
+    time: getCurDay(),
+    files: paramsFiles
+  }
+
+  if (!config.mock) {
+    const data: any = await http.uploadVoiceprint(params)
+    if (data.isUpload) {
+      ElMessage({
+        message: "提交成功,开始测试",
+        type: "success"
+      })
+      submitID.value = data.isUpload
+    } else {
+      ElMessage({
+        message: "提交失败,请重试",
+        type: "error"
+      });
+      return;
+    }
+  } else {
+    submitID.value = 1
+  }
+
   // mock
   while (activeStepMaster.value < 4) {
     activeStepMaster.value++;
@@ -296,11 +337,39 @@ const handleReSubmit = (): void => {
 
 
 const handleViewResult = (): void => {
+  store.setUserFile(paramsFiles)
+  console.log(submitID.value);
+  
   router.push({
-    name: 'VoiceprintResult'
+    name: 'VoiceprintResult',
+    params: {
+      id: submitID.value,
+    }
   })
   emit('changeBread', [{title: '测试结果'}], false)
 }
+
+/**
+ * 将三个文件读为Base64
+ */
+const filesToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve) => {
+    let reader = new FileReader()
+    reader.onload = (e: any) => {
+      resolve(e.target.result)
+    }
+    reader.readAsDataURL(file)
+  })
+}
+
+/**
+ * 截取base64 逗号后的部分，前缀为data:audio/mpeg;base64,
+ */
+const getSubmitBase64 = (base64: string): string => {
+  return base64.substring(base64.indexOf(',') + 1)
+}
+
+
 </script>
 
 
@@ -317,11 +386,13 @@ const handleViewResult = (): void => {
     /**
         to-do img\delete
          */
-    background-color: rgb(184, 184, 184);
+    // background-color: rgb(184, 184, 184);
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
+    background-image: url('../../assets/remove.png');
+    background-position: center;
   }
   .submit-box {
     padding: 20px 0 20px;
@@ -425,6 +496,7 @@ const handleViewResult = (): void => {
               font-size: 1.1rem;
               border-radius: 7px;
               cursor: pointer;
+              white-space: nowrap;
             }
           }
           .files-show {
@@ -478,6 +550,15 @@ const handleViewResult = (): void => {
           }
         }
       }
+    }
+  }
+}
+
+@media screen and (max-width: 481px) {
+  .box {
+    .submit-box {
+      flex-direction: column-reverse;
+      gap: 30px;
     }
   }
 }

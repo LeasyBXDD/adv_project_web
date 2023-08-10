@@ -6,6 +6,7 @@ interface Header {
     homeHeader: Array<Layout.HeaderMenu>;
     userHeader: Array<Layout.HeaderMenu>;
     voiceprintHeader: Array<Layout.HeaderMenu>;
+    testResultHeader: Array<Layout.HeaderMenu>
     curBreadList: Array<Layout.BreadItem>
 }
 
@@ -69,6 +70,17 @@ export const headerStore = defineStore('header', {
                 ]
             }
         ],
+
+        // 声纹测试结果下的header
+        testResultHeader: [
+            {
+                title: '声纹检测',
+                key: 1,
+                pathName: 'VoiceprintSubmit',
+                path: '/voiceprint/submit/stage-first',
+            }
+        ],
+
 
         // 当前的breadList
         curBreadList: [
